@@ -5,3 +5,9 @@ spring:
     url: jdbc:postgresql://localhost:15432/snowman
     username: snowman
     password: '!snowman0116'
+
+management:
+  endpoint:
+    web:
+      exposure:
+        include: health
