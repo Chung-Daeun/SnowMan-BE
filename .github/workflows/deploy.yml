@@ -1,0 +1,56 @@
+name: Deploy Backend (S3 + SSM)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Build (Gradle)
+        run: ./gradlew clean build -x test
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload jar to S3
+        id: upload
+        run: |
+          JAR_PATH=$(ls build/libs/*.jar | head -n 1)
+          SHA=${GITHUB_SHA::7}
+          TS=$(date -u +%Y%m%d%H%M%S)
+          KEY="snowman-be/releases/app-${TS}-${SHA}.jar"
+          echo "KEY=$KEY" >> $GITHUB_OUTPUT
+          aws s3 cp "$JAR_PATH" "s3://${{ secrets.S3_BUCKET }}/$KEY"
+
+      - name: Deploy on EC2 via SSM
+        run: |
+          KEY="${{ steps.upload.outputs.KEY }}"
+          aws ssm send-command \
+            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --parameters commands="[
+              'set -e',
+              'echo Deploying ${KEY}',
+              'sudo mkdir -p /opt/snowman-backend/releases',
+              'if [ -f /opt/snowman-backend/app.jar ]; then sudo cp /opt/snowman-backend/app.jar /opt/snowman-backend/releases/app-previous.jar; fi',
+              'sudo aws s3 cp s3://${{ secrets.S3_BUCKET }}/${KEY} /opt/snowman-backend/app.jar',
+              'sudo systemctl restart snowman-backend',
+              'sudo systemctl --no-pager status snowman-backend | head -n 30'
+            ]" \
+            --comment "Deploy ${KEY}"
