@@ -1,6 +1,8 @@
 package com.example.snowman.global.config;
 
+import com.example.snowman.auth.oauth.RedirectAwareAuthorizationRequestResolver;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -18,12 +20,17 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableConfigurationProperties(AppProperties.class)
 public class SecurityConfig {
 
     private final OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService;
     private final AuthenticationSuccessHandler oAuth2SuccessHandler;
 
     private final CorsConfigurationSource corsConfigurationSource;
+
+    // redirect_uri를 세션에 저장하는 resolver
+    private final RedirectAwareAuthorizationRequestResolver redirectAwareAuthorizationRequestResolver;
+
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -74,7 +81,7 @@ public class SecurityConfig {
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             response.setCharacterEncoding("UTF-8");
                             response.getWriter().write("""
-                                    {"message":"logout success"}
+                                    {"message":"로그아웃 성공"}
                                     """);
                         })
                 );
