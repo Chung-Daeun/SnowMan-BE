@@ -1,17 +1,21 @@
 package com.example.snowman.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.snowman.common.ApiResponse;
+import com.example.snowman.common.resolver.CurrentUser;
+import com.example.snowman.dto.DiaryResponse;
 import com.example.snowman.dto.DiarySaveRequest;
-import com.example.snowman.entity.DiaryEntity;
+import com.example.snowman.entity.User;
 import com.example.snowman.service.DiaryService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,13 +27,18 @@ public class DiaryController {
 
 	private final DiaryService diaryService;
 
-	@GetMapping("/{userId}")
-	public ApiResponse<List<DiaryEntity>> getDiary(@PathVariable Long userId) {
-		return ApiResponse.of(diaryService.getDiary(userId));
+	@GetMapping("")
+	public ApiResponse<List<DiaryResponse>> getDiary(@CurrentUser User user) {
+		return ApiResponse.of(diaryService.getDiary(user.getUserId()));
 	}
 
-	@PostMapping("/")
-	public ApiResponse<DiaryEntity> saveDiary(@RequestBody DiarySaveRequest diary) {
-		return ApiResponse.of(diaryService.addDiary(diary));
+	@GetMapping("/day")
+	public ApiResponse<List<DiaryResponse>> getDiaryByDate(@CurrentUser User user, @RequestParam LocalDate date) {
+		return ApiResponse.of(diaryService.getDiaryByDate(user, date));
+	}
+
+	@PostMapping("/create")
+	public ApiResponse<String> saveDiary(@CurrentUser User user, @RequestBody DiarySaveRequest diary) {
+		return ApiResponse.of(diaryService.addDiary(user, diary));
 	}
 }
