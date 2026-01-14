@@ -1,25 +1,31 @@
 package com.example.snowman.auth.oauth;
 
 import com.example.snowman.entity.User;
+import com.example.snowman.global.config.AppProperties;
 import com.example.snowman.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Map;
+
+import static com.example.snowman.auth.oauth.RedirectAwareAuthorizationRequestResolver.SESSION_REDIRECT_URI_KEY;
 
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final UserRepository userRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final AppProperties appProperties;
+
+    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Override
     public void onAuthenticationSuccess(
@@ -31,20 +37,22 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String googleSub = String.valueOf(oAuth2User.getAttributes().get("sub"));
 
-        User user = userRepository.findByGoogleSub(googleSub)
+        userRepository.findByGoogleSub(googleSub)
                 .orElseGet(() -> userRepository.save(User.create(googleSub)));
 
-        // 세션 ID 포함
-        String sessionId = request.getSession(true).getId();
+        // 세션 확정
+        HttpSession session = request.getSession(true);
 
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("application/json;charset=UTF-8");
+        // 로그인 시작 시 저장해둔 redirect_uri 사용
+        String redirectUri = (String) session.getAttribute(SESSION_REDIRECT_URI_KEY);
+        session.removeAttribute(SESSION_REDIRECT_URI_KEY); // 한 번 쓰고 제거
 
-        objectMapper.writeValue(response.getWriter(), Map.of(
-                "userId", user.getUserId(),
-                "googleSub", user.getGoogleSub(),
-                "sessionId", sessionId
-        ));
+        // fallback은 프로퍼티 기본값
+        String target = (redirectUri != null && !redirectUri.isBlank())
+                ? redirectUri
+                : appProperties.getOauth2SuccessRedirectUrl();
+
+        redirectStrategy.sendRedirect(request, response, target);
     }
 
     public record LoginResponse(Long userId, String googleSub) {}
