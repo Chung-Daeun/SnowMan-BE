@@ -1,7 +1,0 @@
-spring:
-  application:
-    name: SnowMan-BE
-  datasource:
-    url: jdbc:postgresql://localhost:15432/snowman
-    username: snowman
-    password: '!snowman0116'
