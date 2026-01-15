@@ -24,4 +24,6 @@ public interface DiaryJpaRepository extends JpaRepository<Diary, Long> {
 		@Param("start") LocalDateTime start,
 		@Param("end") LocalDateTime end
 	);
+
+	Diary findByDiaryId(Long diaryId);
 }

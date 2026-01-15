@@ -21,8 +21,8 @@ public class DiaryService {
 
 	private final DiaryJpaRepository diaryJpaRepository;
 
-	public List<DiaryResponse> getDiary(Long userId) {
-		List<Diary> diaryList = diaryJpaRepository.findAllByUserId(userId);
+	public DiaryResponse getDiaryById(Long diaryId) {
+		Diary diaryList = diaryJpaRepository.findByDiaryId(diaryId);
 		return DiaryResponse.of(diaryList);
 	}
 
