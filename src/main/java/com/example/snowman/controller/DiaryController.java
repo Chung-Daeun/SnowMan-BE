@@ -6,6 +6,7 @@ import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +29,9 @@ public class DiaryController {
 
 	private final DiaryService diaryService;
 
-	@GetMapping("")
-	public ApiResponse<List<DiaryResponse>> getDiary(@CurrentUser User user) {
-		return ApiResponse.of(diaryService.getDiary(user.getUserId()));
+	@GetMapping("/{diaryId}")
+	public ApiResponse<DiaryResponse> getDiaryById(@CurrentUser User user, @PathVariable Long diaryId) {
+		return ApiResponse.of(diaryService.getDiaryById(diaryId));
 	}
 
 	@GetMapping("/day")
