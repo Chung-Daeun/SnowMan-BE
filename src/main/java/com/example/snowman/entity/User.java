@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,6 +26,12 @@ public class User {
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column
+    private String nickname;
+
+    @Column
+    private LocalDate birthDate;
 
     private User(String googleSub) {
         this.googleSub = googleSub;
