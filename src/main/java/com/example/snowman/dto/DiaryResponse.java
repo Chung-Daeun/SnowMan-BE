@@ -19,7 +19,7 @@ public record DiaryResponse (
 			diary.getDiaryId(),
 			diary.getUserId(),
 			diary.getContent(),
-			AiReplyResponse.of(diary.getAiReply()),
+			diary .getAiReply() != null ? AiReplyResponse.of(diary.getAiReply()) : null,
 			diary.getCreatedAt()
 		);
 	}
