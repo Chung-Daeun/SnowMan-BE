@@ -2,6 +2,7 @@ package com.example.snowman.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -34,6 +35,17 @@ public class DiaryService {
 			);
 		return DiaryResponse.of(diaryList);
 	}
+
+	public List<DiaryResponse> getDiaryByMonth(User user, YearMonth date) {
+		LocalDateTime start = date.atDay(1).atStartOfDay();
+		LocalDateTime end = date.plusMonths(1).atDay(1).atStartOfDay();
+		List<Diary> diaryList =
+			diaryJpaRepository.findDiaryByDateRange(
+				user.getUserId(), start, end
+			);
+		return DiaryResponse.of(diaryList);
+	}
+
 
 	public String addDiary(User user, DiarySaveRequest diary) {
 		diaryJpaRepository.save(Diary.create(user.getUserId(), diary.content()));
