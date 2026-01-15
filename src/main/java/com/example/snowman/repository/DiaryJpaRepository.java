@@ -18,6 +18,7 @@ public interface DiaryJpaRepository extends JpaRepository<Diary, Long> {
 			WHERE d.userId = :userId
 			  AND d.createdAt >= :start
 			  AND d.createdAt < :end
+			  AND d.deletedAt IS NULL
 		""")
 	List<Diary> findDiaryByDateRange(
 		@Param("userId") Long userId,
@@ -25,5 +26,11 @@ public interface DiaryJpaRepository extends JpaRepository<Diary, Long> {
 		@Param("end") LocalDateTime end
 	);
 
-	Diary findByDiaryId(Long diaryId);
+	@Query("""
+			SELECT d
+			FROM Diary d
+			WHERE d.diaryId = :diaryId
+			  AND d.deletedAt IS NULL
+		""")
+	Diary findByDiaryId(@Param("diaryId") Long diaryId);
 }

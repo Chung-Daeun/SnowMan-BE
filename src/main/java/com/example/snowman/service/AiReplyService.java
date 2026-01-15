@@ -45,7 +45,7 @@ public class AiReplyService {
 		AiReply savedReply = aiReplyRepository.save(aiReply);
 		AiAnalysis savedAnalysis = aiAnalysisRepository.save(aiAnalysis);
 
-		return AiReplyCreateResponse.of(savedReply, savedAnalysis);
+		return AiReplyCreateResponse.of(diaryId, savedReply, savedAnalysis);
 	}
 
 

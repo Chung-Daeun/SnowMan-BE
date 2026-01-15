@@ -50,8 +50,15 @@ public class DiaryController {
 	@PostMapping("/create")
 	public ApiResponse<AiReplyCreateResponse> saveDiary(@CurrentUser User user, @RequestBody DiarySaveRequest diary) {
 		Long diaryId = diaryService.addDiary(user, diary);
-		AiReplyCreateResponse response = aiReplyService.createReply(user, diaryId);
+		// AI 답변은 비동기로 자동 생성
+		aiReplyService.createReply(user, diaryId);
+		// diaryId만 반환 (AI 답변은 비동기로 생성 중)
+		return ApiResponse.of(new AiReplyCreateResponse(diaryId, null, null));
+	}
 
-		return ApiResponse.of(response);
+	@PostMapping("/{diaryId}/ai-reply")
+	public ApiResponse<Void> createAiReply(@CurrentUser User user, @PathVariable Long diaryId) {
+		aiReplyService.createReply(user, diaryId);
+		return ApiResponse.of(null);
 	}
 }

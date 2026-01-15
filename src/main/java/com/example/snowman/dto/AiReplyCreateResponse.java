@@ -7,11 +7,13 @@ import com.example.snowman.entity.AiReply;
 import com.example.snowman.entity.EmotionScores;
 
 public record AiReplyCreateResponse(
+	Long diaryId,
 	AiReplyResponse aiReply,
 	AiAnalysisResponse aiAnalysis
 ) {
-	public static AiReplyCreateResponse of(AiReply aiReply, AiAnalysis aiAnalysis) {
+	public static AiReplyCreateResponse of(Long diaryId, AiReply aiReply, AiAnalysis aiAnalysis) {
 		return new AiReplyCreateResponse(
+			diaryId,
 			AiReplyResponse.of(aiReply),
 			AiAnalysisResponse.of(aiAnalysis)
 		);

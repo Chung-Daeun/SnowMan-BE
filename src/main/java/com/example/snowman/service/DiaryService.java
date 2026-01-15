@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -22,8 +23,19 @@ public class DiaryService {
 	private final DiaryJpaRepository diaryJpaRepository;
 
 	public DiaryResponse getDiaryById(Long diaryId) {
-		Diary diaryList = diaryJpaRepository.findByDiaryId(diaryId);
-		return DiaryResponse.of(diaryList);
+		Diary diary = diaryJpaRepository.findByDiaryId(diaryId);
+		if (diary == null) {
+			// deleted_at이 있는지 확인하기 위해 전체 조회
+			Optional<Diary> deletedDiaryOpt = diaryJpaRepository.findById(diaryId);
+			if (deletedDiaryOpt.isPresent()) {
+				Diary deletedDiary = deletedDiaryOpt.get();
+				if (deletedDiary.getDeletedAt() != null) {
+					throw new IllegalStateException("삭제된 일기입니다.");
+				}
+			}
+			throw new IllegalArgumentException("일기를 찾을 수 없습니다.");
+		}
+		return DiaryResponse.of(diary);
 	}
 
 	public List<DiaryResponse> getDiaryByDate(User user, LocalDate date) {
