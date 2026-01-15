@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 
+import com.example.snowman.dto.AiReplyCreateResponse;
+import com.example.snowman.service.AiReplyService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class DiaryController {
 
 	private final DiaryService diaryService;
+	private final AiReplyService aiReplyService;
 
 	@GetMapping("/{diaryId}")
 	public ApiResponse<DiaryResponse> getDiaryById(@CurrentUser User user, @PathVariable Long diaryId) {
@@ -45,7 +48,10 @@ public class DiaryController {
 	}
 
 	@PostMapping("/create")
-	public ApiResponse<String> saveDiary(@CurrentUser User user, @RequestBody DiarySaveRequest diary) {
-		return ApiResponse.of(diaryService.addDiary(user, diary));
+	public ApiResponse<AiReplyCreateResponse> saveDiary(@CurrentUser User user, @RequestBody DiarySaveRequest diary) {
+		Long diaryId = diaryService.addDiary(user, diary);
+		AiReplyCreateResponse response = aiReplyService.createReply(user, diaryId);
+
+		return ApiResponse.of(response);
 	}
 }
