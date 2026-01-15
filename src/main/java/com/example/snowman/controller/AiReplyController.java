@@ -1,23 +1,30 @@
 package com.example.snowman.controller;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.snowman.common.ApiResponse;
+import com.example.snowman.common.resolver.CurrentUser;
+import com.example.snowman.dto.AiReplyCreateResponse;
+import com.example.snowman.entity.User;
+import com.example.snowman.service.AiReplyService;
+
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequestMapping("/api/ai")
 @RequiredArgsConstructor
 public class AiReplyController {
 
-    private final ChatClient chatClient;
+	private final AiReplyService aiReplyService;
 
-    @GetMapping("/ai/test")
-    public String test(@RequestParam(defaultValue = "한국어로 1문장으로 인사해줘") String prompt) {
-
-        return chatClient.prompt()
-                .user(prompt)
-                .call()
-                .content();
-    }
+	@PostMapping("/reply")
+	public ApiResponse<AiReplyCreateResponse> generateReply(
+		@CurrentUser User user,
+		@RequestParam Long diaryId
+	) {
+		return ApiResponse.of(aiReplyService.createReply(user, diaryId));
+	}
 }

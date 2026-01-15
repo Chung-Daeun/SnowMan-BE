@@ -46,9 +46,8 @@ public class DiaryService {
 		return DiaryResponse.of(diaryList);
 	}
 
-
-	public String addDiary(User user, DiarySaveRequest diary) {
-		diaryJpaRepository.save(Diary.create(user.getUserId(), diary.content()));
-		return "작성이 성공적으로 완료되었습니다.";
+	public Long addDiary(User user, DiarySaveRequest diary) {
+		Diary save = diaryJpaRepository.save(Diary.create(user.getUserId(), diary.content()));
+		return save.getDiaryId();
 	}
 }

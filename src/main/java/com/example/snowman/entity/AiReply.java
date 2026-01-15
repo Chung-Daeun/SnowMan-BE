@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class AiReply {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "reply_id")
@@ -34,6 +35,21 @@ public class AiReply {
 	@Column(name = "reply_content")
 	private String replyContent;
 
+
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
+
+	private AiReply(Diary diary, String replyContent) {
+		this.diary = diary;
+		this.replyContent = replyContent;
+		this.createdAt = LocalDateTime.now();
+	}
+
+	public static AiReply create(Diary diary, String replyContent) {
+		return new AiReply(diary, replyContent);
+	}
+
+	public void updateContent(String replyContent) {
+		this.replyContent = replyContent;
+	}
 }
