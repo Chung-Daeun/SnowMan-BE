@@ -34,13 +34,31 @@ public class AiReport {
     @Column(name = "period_start", nullable = false)
     private LocalDate periodStart;
 
-    @Column(name = "period_end", nullable = false)
-    private LocalDate periodEnd;
+	@Column(name = "period_end", nullable = false)
+	private LocalDate periodEnd;
 
-    @Column(name = "report_content")
-    private String reportContent;
+	@Embedded
+	private EmotionScores scores;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+	@Column(name = "anxiety_summary")
+	private String anxietySummary;
+
+	@Column(name = "calm_summary")
+	private String calmSummary;
+
+	@Column(name = "joy_summary")
+	private String joySummary;
+
+	@Column(name = "sadness_summary")
+	private String sadnessSummary;
+
+	@Column(name = "anger_summary")
+	private String angerSummary;
+
+	@Column(name = "report_content")
+	private String reportContent;
+
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
 
 }
