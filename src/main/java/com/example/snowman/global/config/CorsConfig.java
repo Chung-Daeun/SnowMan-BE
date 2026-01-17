@@ -18,7 +18,8 @@ public class CorsConfig {
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:3000",
                 "http://172.30.1.39:3000",
-                "https://snow-man-psi.vercel.app"
+                "https://snow-man-psi.vercel.app",
+                "https://app.snowman.today"
         ));
 
         config.setAllowedMethods(List.of(
