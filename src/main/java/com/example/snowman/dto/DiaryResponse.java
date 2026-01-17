@@ -1,6 +1,8 @@
 package com.example.snowman.dto;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,15 +14,15 @@ public record DiaryResponse (
 	Long userId,
 	String content,
 	AiReplyResponse aiReply,
-	LocalDateTime createdAt
+	String time
 ){
 	public static DiaryResponse of(Diary diary) {
 		return new DiaryResponse(
 			diary.getDiaryId(),
 			diary.getUserId(),
 			diary.getContent(),
-			diary .getAiReply() != null ? AiReplyResponse.of(diary.getAiReply()) : null,
-			diary.getCreatedAt()
+			diary.getAiReply() != null ? AiReplyResponse.of(diary.getAiReply()) : null,
+			diary.getCreatedAt().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"))
 		);
 	}
 
