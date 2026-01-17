@@ -26,10 +26,10 @@ public class DiaryService {
 		return DiaryResponse.of(diaryList);
 	}
 
-	public List<DiaryResponse> getDiaryByDate(User user, String date) {
-		LocalDate day = LocalDate.parse(date);
+	public List<DiaryResponse> getDiaryByDate(User user, LocalDate date) {
+//		LocalDate day = LocalDate.parse(date);
 
-		return DiaryResponse.of(diaryJpaRepository.findDiaryByDate(user.getUserId(), day));
+		return DiaryResponse.of(diaryJpaRepository.findDiaryByDate(user.getUserId(), date));
 	}
 
 	public List<Integer> getDiaryByMonth(User user, String date) {

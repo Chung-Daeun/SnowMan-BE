@@ -38,7 +38,7 @@ public class DiaryController {
 	}
 
 	@GetMapping("/day")
-	public ApiResponse<List<DiaryResponse>> getDiaryByDate(@CurrentUser User user, @RequestParam String date) {
+	public ApiResponse<List<DiaryResponse>> getDiaryByDate(@CurrentUser User user, @RequestParam LocalDate date) {
 		return ApiResponse.of(diaryService.getDiaryByDate(user, date));
 	}
 

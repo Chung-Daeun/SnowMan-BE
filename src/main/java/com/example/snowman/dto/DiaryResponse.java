@@ -14,14 +14,14 @@ public record DiaryResponse (
 	Long userId,
 	String content,
 	AiReplyResponse aiReply,
-	String createdAt
+	String time
 ){
 	public static DiaryResponse of(Diary diary) {
 		return new DiaryResponse(
 			diary.getDiaryId(),
 			diary.getUserId(),
 			diary.getContent(),
-			diary .getAiReply() != null ? AiReplyResponse.of(diary.getAiReply()) : null,
+			diary.getAiReply() != null ? AiReplyResponse.of(diary.getAiReply()) : null,
 			diary.getCreatedAt().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"))
 		);
 	}

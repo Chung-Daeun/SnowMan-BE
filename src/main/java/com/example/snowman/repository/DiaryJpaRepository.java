@@ -30,7 +30,7 @@ public interface DiaryJpaRepository extends JpaRepository<Diary, Long> {
 			SELECT d
 			FROM Diary d
 			WHERE d.userId = :userId
-			  AND d.diaryDate >= :date
+			  AND d.diaryDate = :date
 		""")
 	List<Diary> findDiaryByDate(
 		@Param("userId") Long userId,
