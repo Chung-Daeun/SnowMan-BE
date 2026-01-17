@@ -20,11 +20,19 @@ public class AiReplyController {
 
 	private final AiReplyService aiReplyService;
 
+//	@PostMapping("/reply")
+//	public ApiResponse<AiReplyCreateResponse> generateReply(
+//		@CurrentUser User user,
+//		@RequestParam Long diaryId
+//	) {
+//		return ApiResponse.of(aiReplyService.createReply(user, diaryId));
+//	}
+
 	@PostMapping("/reply")
-	public ApiResponse<AiReplyCreateResponse> generateReply(
-		@CurrentUser User user,
-		@RequestParam Long diaryId
+	public void generateReply(
+			@CurrentUser User user,
+			@RequestParam Long diaryId
 	) {
-		return ApiResponse.of(aiReplyService.createReply(user, diaryId));
+//		return ApiResponse.of(aiReplyService.createReply(user, diaryId));
 	}
 }

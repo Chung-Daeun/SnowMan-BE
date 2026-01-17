@@ -48,10 +48,12 @@ public class DiaryController {
 	}
 
 	@PostMapping("/create")
-	public ApiResponse<AiReplyCreateResponse> saveDiary(@CurrentUser User user, @RequestBody DiarySaveRequest diary) {
+	public ApiResponse<Long> saveDiary(@CurrentUser User user, @RequestBody DiarySaveRequest diary) {
 		Long diaryId = diaryService.addDiary(user, diary);
-		AiReplyCreateResponse response = aiReplyService.createReply(user, diaryId);
+//		AiReplyCreateResponse response = aiReplyService.createReply(user, diaryId);
+		aiReplyService.createReply(user, diaryId);
 
-		return ApiResponse.of(response);
+//		return ApiResponse.of(response);
+		return ApiResponse.of(diaryId);
 	}
 }
