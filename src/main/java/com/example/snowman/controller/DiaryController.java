@@ -38,12 +38,12 @@ public class DiaryController {
 	}
 
 	@GetMapping("/day")
-	public ApiResponse<List<DiaryResponse>> getDiaryByDate(@CurrentUser User user, @RequestParam LocalDate date) {
+	public ApiResponse<List<DiaryResponse>> getDiaryByDate(@CurrentUser User user, @RequestParam String date) {
 		return ApiResponse.of(diaryService.getDiaryByDate(user, date));
 	}
 
 	@GetMapping("/month")
-	public ApiResponse<List<DiaryResponse>> getDiaryByMonth(@CurrentUser User user, @RequestParam YearMonth date) {
+	public ApiResponse<List<Integer>> getDiaryByMonth(@CurrentUser User user, @RequestParam String date) {
 		return ApiResponse.of(diaryService.getDiaryByMonth(user, date));
 	}
 
