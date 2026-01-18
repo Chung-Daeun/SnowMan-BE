@@ -41,4 +41,14 @@ public class User {
     public static User create(String googleSub) {
         return new User(googleSub);
     }
+
+    public void updateProfile(String nickname, String birthDate) {
+        this.nickname = nickname;
+
+        if (birthDate == null || birthDate.isBlank()) {
+            this.birthDate = null;
+        } else {
+            this.birthDate = LocalDate.parse(birthDate);
+        }
+    }
 }

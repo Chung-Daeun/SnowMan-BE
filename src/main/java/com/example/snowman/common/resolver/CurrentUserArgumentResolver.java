@@ -1,5 +1,7 @@
 package com.example.snowman.common.resolver;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +36,28 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
 		NativeWebRequest webRequest,
 		WebDataBinderFactory binderFactory
 	) {
+		HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+
+
+		// 1. 쿠키에서 JSESSIONID를 찾고 값이 "test"인지 확인합니다.
+		String jsessionId = null;
+		if (request.getCookies() != null) {
+			for (var cookie : request.getCookies()) {
+				if ("JSESSIONID".equals(cookie.getName())) {
+					jsessionId = cookie.getValue();
+					break;
+				}
+			}
+		}
+
+		// 2. 만약 값이 "test"라면? 아묻따 1번 유저!
+		if ("test".equals(jsessionId)) {
+			return userRepository.findById(1L).orElseGet(() ->
+					userRepository.save(User.create("test-fallback-sub"))
+			);
+		}
+
+		// 3. "test"가 아니면 정상적인 구글 로그인 로직 수행
 		Authentication authentication =
 			SecurityContextHolder.getContext().getAuthentication();
 
