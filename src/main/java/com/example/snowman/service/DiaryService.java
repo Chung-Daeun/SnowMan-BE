@@ -27,23 +27,18 @@ public class DiaryService {
 	}
 
 	public List<DiaryResponse> getDiaryByDate(User user, LocalDate date) {
-		LocalDateTime start = date.atStartOfDay();
-		LocalDateTime end = date.plusDays(1).atStartOfDay();
-		List<Diary> diaryList =
-			diaryJpaRepository.findDiaryByDateRange(
-				user.getUserId(), start, end
-			);
-		return DiaryResponse.of(diaryList);
+//		LocalDate day = LocalDate.parse(date);
+
+		return DiaryResponse.of(diaryJpaRepository.findDiaryByDate(user.getUserId(), date));
 	}
 
-	public List<DiaryResponse> getDiaryByMonth(User user, YearMonth date) {
-		LocalDateTime start = date.atDay(1).atStartOfDay();
-		LocalDateTime end = date.plusMonths(1).atDay(1).atStartOfDay();
-		List<Diary> diaryList =
-			diaryJpaRepository.findDiaryByDateRange(
-				user.getUserId(), start, end
-			);
-		return DiaryResponse.of(diaryList);
+	public List<Integer> getDiaryByMonth(User user, String date) {
+		YearMonth yearMonth = YearMonth.parse(date);
+
+		LocalDate start = yearMonth.atDay(1);
+		LocalDate end = yearMonth.plusMonths(1).atDay(1);
+
+		return diaryJpaRepository.findWrittenDays(user.getUserId(), start, end);
 	}
 
 	public Long addDiary(User user, DiarySaveRequest diary) {

@@ -1,14 +1,9 @@
 package com.example.snowman.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,6 +32,15 @@ public class Diary {
 
 	@Column(name = "deleted_at")
 	private LocalDateTime deletedAt;
+
+	@Column(name = "diary_date", nullable = false)
+	private LocalDate diaryDate;
+
+	@PrePersist
+	public void prePersist(){
+		if (createdAt == null) createdAt = LocalDateTime.now();
+		if (diaryDate == null) diaryDate = createdAt.toLocalDate();
+	}
 
 	@OneToOne(mappedBy = "diary")
 	private AiReply aiReply;

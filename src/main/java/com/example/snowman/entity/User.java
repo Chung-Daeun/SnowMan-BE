@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,6 +27,12 @@ public class User {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column
+    private String nickname;
+
+    @Column
+    private LocalDate birthDate;
+
     private User(String googleSub) {
         this.googleSub = googleSub;
         this.createdAt = LocalDateTime.now();
@@ -33,5 +40,15 @@ public class User {
 
     public static User create(String googleSub) {
         return new User(googleSub);
+    }
+
+    public void updateProfile(String nickname, String birthDate) {
+        this.nickname = nickname;
+
+        if (birthDate == null || birthDate.isBlank()) {
+            this.birthDate = null;
+        } else {
+            this.birthDate = LocalDate.parse(birthDate);
+        }
     }
 }

@@ -18,6 +18,8 @@ import com.example.snowman.repository.DiaryJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.concurrent.CompletableFuture;
+
 @Service
 @RequiredArgsConstructor
 public class AiReplyService {
@@ -30,7 +32,7 @@ public class AiReplyService {
 	//외부 API 통신하는 부분이므로 Async 어노테이션를 통해 비동기 적용
 	@Async
 	@Transactional
-	public AiReplyCreateResponse createReply(User user, Long diaryId) {
+	public void createReply(User user, Long diaryId) {
 		Diary diary = getDiaryForUser(user, diaryId);
 
 		if (aiReplyRepository.existsByDiary(diary)) {
@@ -45,7 +47,7 @@ public class AiReplyService {
 		AiReply savedReply = aiReplyRepository.save(aiReply);
 		AiAnalysis savedAnalysis = aiAnalysisRepository.save(aiAnalysis);
 
-		return AiReplyCreateResponse.of(savedReply, savedAnalysis);
+//		return AiReplyCreateResponse.of(savedReply, savedAnalysis);
 	}
 
 
