@@ -30,4 +30,16 @@ public class AiReportController {
 	public ApiResponse<List<AiReportResponse>> getMonthlyReports(@CurrentUser User user) {
 		return ApiResponse.of(aiReportService.getMonthlyReports(user));
 	}
+
+	@GetMapping("/weekly/run")
+	public ApiResponse<String> runWeeklyReport() {
+		aiReportService.createWeeklyReports();
+		return ApiResponse.of("weekly report triggered");
+	}
+
+	@GetMapping("/monthly/run")
+	public ApiResponse<String> runMonthlyReport() {
+		aiReportService.createMonthlyReports();
+		return ApiResponse.of("monthly report triggered");
+	}
 }
