@@ -60,7 +60,8 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/login/**", "/oauth2/**", "/actuator/**", "/error", "/favicon.ico", "/ai/test", "/api/test-login"
+                                "/", "/login/**", "/oauth2/**", "/actuator/**", "/error", "/favicon.ico", "/ai/test", "/api/test-login",
+                                "/api/ai/report/weekly/run", "/api/ai/report/monthly/run", "/api/ai/report/weekly", "/api/ai/report/monthly"
                         ).permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
